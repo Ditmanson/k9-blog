@@ -4,7 +4,7 @@ Comments live in the `grizcomments` DynamoDB table (us-east-2) behind the AppSyn
 
 ## Policy: auto-approve + Turnstile
 
-A Comment goes live as soon as it passes Turnstile. The `writeCommentToDynamo` AppSync function (`vky3llrbuff2nathtuzf7sjoeu`) sets `approved: true`, whatever the client sends. If spam gets through, change that to `false` with `aws appsync update-function`: new Comments then wait for approval.
+A Comment goes live as soon as it passes Turnstile. The `writeCommentToDynamo` AppSync function (`vky3llrbuff2nathtuzf7sjoeu`) sets `approved: true`, whatever the client sends. If spam gets through, change that to `false` with `aws appsync update-function`: new Comments then wait for approval. Before doing that, close the `onCreateGrizcomments` subscription: it sends every new Comment to anyone with the public key, approved or not.
 
 `updateGrizcomments` and `deleteGrizcomments` reject every client call. Moderation only works with the owner's AWS credentials.
 
@@ -15,7 +15,7 @@ scripts/hide-comment.py                            # list what's live
 scripts/hide-comment.py <postSlug> <createdAt>     # hide one
 ```
 
-Hidden is `approved: false`: the blog stops showing it. The public API can still return it to someone who queries without the filter, so delete anything that must be gone:
+Hidden is `approved: false`. The `listGrizcomments` and `getGrizcomments` resolvers only ever return approved Comments, whatever the client asks for, so a hidden one is readable only with the owner's AWS credentials. To remove one entirely:
 
 ```
 aws dynamodb delete-item --table-name grizcomments --region us-east-2 \
