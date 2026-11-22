@@ -291,6 +291,19 @@ class SeedPosts(unittest.TestCase):
     def test_agitation_collar_does_not_claim_protection_training(self):
         self.assertIn("I don’t train protection", text(read("posts/agitation-collar/index.html")))
 
+    def test_griz_has_her_photos_and_current_claims(self):
+        html = read("posts/griz/index.html")
+        self.assertIn("/images/griz/card.jpg", self.posts["griz"]["card"])
+        photos = re.findall(r'<img src="(/images/griz/[^"]+)"', html)
+        self.assertEqual(len(photos), 3)
+        for photo in photos:
+            self.assertTrue(os.path.exists(os.path.join(PUBLIC, photo.lstrip("/"))), photo)
+        self.assertIn("working toward certification", text(html))
+        self.assertNotIn("obedience, and protection", text(html))
+        self.assertIn('href="https://k9-communication.com/training-records/griz/"', html)
+        self.assertRegex(html, r'(?s)<h2 [^>]*k9-biglink[^>]*><a href="https://k9-communication\.com/training-records/griz/"'
+                               r'[^<]*</a>\s*</h2>\s*<h2 id="?search-and-rescue')
+
 
 class Links(unittest.TestCase):
     def test_internal_links_and_anchors_resolve(self):

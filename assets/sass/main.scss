@@ -253,6 +253,20 @@ h1, h2, h3, h4, h5, h6,
   text-underline-offset: 0.2em;
 }
 
+// A heading that is one big link: "## [Text](url) {.k9-biglink}"
+.content h2.k9-biglink {
+  margin-block: 2.25rem;
+  padding-block: 1rem;
+  border-block: 3px solid var(--k9-gold);
+  font-size: clamp(2.1rem, 9vw, 2.9rem);
+  line-height: 1.05;
+}
+.content h2.k9-biglink a {
+  display: block;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
 // YouTube player (layouts/_shortcodes/youtube.html)
 .k9r-video { margin-block: 1.5rem; }
 .k9r-thumb {
