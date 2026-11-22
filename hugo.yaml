@@ -27,6 +27,9 @@ permalinks:
     posts: "/posts/:slugorcontentbasename/"
 
 params:
+  # noindex on every page until cutover to griz.sh (issue #17 removes it).
+  preview: true
+
   description: "Gear, dogs, training, food, and adventures: the dog blog of K9-Communication LLC in Colorado Springs, CO."
 
   # The business site, linked from the header and footer.
