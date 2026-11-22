@@ -32,4 +32,10 @@
      AppSync on a different origin, so this must be disabled before htmx processes the page. -->
 <meta name="htmx-config" content='{"selfRequestsOnly": false}'>
 <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" defer></script>
+{{ if and .IsPage (eq .Section "posts") }}
+<!-- Comments: Mustache renders AppSync's JSON, json-enc posts it. -->
+<script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx-ext-client-side-templates@2.0.2/client-side-templates.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx-ext-json-enc@2.0.3/json-enc.js" defer></script>
+{{ end }}
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js" defer></script>

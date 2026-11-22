@@ -1,0 +1,35 @@
+<h2 class="k9-h2" id="comments-heading">Comments</h2>
+
+{{/* This template is rendered client-side by Mustache, not by Hugo - Hugo's
+     {{ }} action delimiters collide with Mustache's own syntax, so every
+     literal {{ / }} below is emitted via {{"{{"}} / {{"}}"}} to stop Hugo
+     from trying to parse it as its own template action. */}}
+<template id="comments-template">
+{{"{{"}}#errors{{"}}"}}
+<p>Error loading comments.</p>
+{{"{{"}}/errors{{"}}"}}
+{{"{{"}}^errors{{"}}"}}
+{{"{{"}}#data.listGrizcomments.items{{"}}"}}
+<div class="k9-comment">
+    <strong class="k9-comment-name">{{"{{"}}name{{"}}"}}</strong>
+    <p>{{"{{"}}comment{{"}}"}}</p>
+</div>
+{{"{{"}}/data.listGrizcomments.items{{"}}"}}
+{{"{{"}}^data.listGrizcomments.items{{"}}"}}
+<p>No comments yet.</p>
+{{"{{"}}/data.listGrizcomments.items{{"}}"}}
+{{"{{"}}/errors{{"}}"}}
+</template>
+
+<div
+    id="comments"
+    hx-post="{{ site.Params.commentsURL }}"
+    hx-trigger="load, refreshComments from:body"
+    hx-ext="json-enc,client-side-templates"
+    hx-swap="innerHTML"
+    mustache-template="comments-template"
+    hx-headers='{"x-api-key": "{{ site.Params.commentsKey }}"}'
+    hx-vals='js:{query: `query ListComments($filter: TableGrizcommentsFilterInput) { listGrizcomments(filter: $filter) { items { id name comment postSlug createdAt approved } } }`, variables: {filter: {postSlug: {eq: window.location.pathname}, approved: {eq: true}}}}'
+>
+    Loading comments...
+</div>

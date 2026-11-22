@@ -18,6 +18,10 @@
         {{ range . }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}
       </ul>
     {{ end }}
+    <div class="k9-comments">
+      {{ partial "comments.html" . }}
+      {{ partial "postComment.html" . }}
+    </div>
   </div>
 </article>
 {{ if .HasShortcode "youtube" }}{{ partial "videoPlayer.html" . }}{{ end }}

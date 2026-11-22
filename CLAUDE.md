@@ -19,6 +19,7 @@ K9-Communication LLC's Blog: the casual dog blog that replaces griz.sh on that d
 - Seed and drafted Posts are published under the owner's name: use only facts from the owner's own content, never invent anecdotes.
 - **Test before committing:** `python3 -m unittest discover tests` (needs Hugo, `sass` on PATH, and `npm ci`), plus a visual check at phone width (~390px).
 - Test-driven: failing test, then the change.
+- Comments and their moderation: `docs/comments.md`. Hosting: `docs/deploys.md`.
 
 ## New content inbox
 

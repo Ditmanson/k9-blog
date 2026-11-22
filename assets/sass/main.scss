@@ -287,6 +287,23 @@ h1, h2, h3, h4, h5, h6,
   .k9r-play { transition: box-shadow 0.25s; }
 }
 
+// Comments
+.k9-comments {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--bulma-scheme-main-ter);
+}
+.k9-comment {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--bulma-scheme-main-ter);
+  overflow-wrap: anywhere;
+}
+.k9-comment-name { display: block; }
+.k9-comment p { white-space: pre-line; }
+.k9-comment-form { margin-top: 2rem; }
+.k9-comment-form .input,
+.k9-comment-form .textarea { font-size: 1rem; } // under 16px, iOS zooms the page on focus
+
 // Footer
 .k9-footer {
   padding: 2rem 1.5rem;

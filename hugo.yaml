@@ -34,3 +34,9 @@ params:
 
   # The business site, linked from the header and footer.
   businessURL: "https://k9-communication.com/"
+
+  # Comments (docs/comments.md): the AppSync API, its public key (expires 2027-11-21),
+  # and the Turnstile site key. All three are public. The Turnstile secret is only in AppSync.
+  commentsURL: "https://z2ujenfjtzhdngdxb7xe5pld3i.appsync-api.us-east-2.amazonaws.com/graphql"
+  commentsKey: "da2-zmx7kmlw7ze4hioupggncn3xtm"
+  turnstileSiteKey: "0x4AAAAAAEhVn_r1wv8HHNku"

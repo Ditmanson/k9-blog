@@ -1,0 +1,142 @@
+<!-- Post Comment Form -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+function getTurnstileToken() {
+    return typeof turnstile !== "undefined" ? turnstile.getResponse() : "";
+}
+
+function resetTurnstile() {
+    if (typeof turnstile !== "undefined") {
+        turnstile.reset();
+    }
+}
+
+function turnstileTokenOrNotify() {
+    if (!getTurnstileToken()) {
+        document.body.dispatchEvent(new CustomEvent('comment-captcha-missing'));
+        return false;
+    }
+    return true;
+}
+
+function buildCommentHeaders() {
+    return {
+        "x-api-key": {{ site.Params.commentsKey }},
+        "x-turnstile-token": getTurnstileToken()
+    };
+}
+
+function buildCommentVals() {
+    return {
+        query: "mutation CreateComment($input: CreateGrizcommentsInput!) { createGrizcomments(input: $input) { id name comment postSlug createdAt approved } }",
+        variables: {
+            input: {
+                id: crypto.randomUUID(),
+                name: document.getElementById("name").value,
+                comment: document.getElementById("comment").value,
+                url: {{ site.BaseURL }},
+                postSlug: window.location.pathname,
+                approved: true,
+                createdAt: new Date().toISOString()
+            }
+        }
+    };
+}
+
+document.addEventListener('alpine:init', function () {
+    Alpine.data('commentForm', function () {
+        return {
+            showError: false,
+            errorMessage: '',
+
+            init: function () {
+                document.body.addEventListener('comment-captcha-missing', function () {
+                    this.errorMessage = "Please complete the captcha before posting.";
+                    this.showError = true;
+                }.bind(this));
+            },
+
+            handleAfterRequest: function (evt) {
+                if (evt.detail.elt.id !== 'commentForm') {
+                    return;
+                }
+
+                var body = null;
+                try {
+                    body = JSON.parse(evt.detail.xhr.responseText);
+                } catch (e) {
+                    // leave body null - falls through to the generic error branch below
+                }
+
+                resetTurnstile();
+
+                if (body && body.errors) {
+                    console.error("GraphQL errors:", body.errors);
+                    // Match on the resolver's own message text, not just errorType:
+                    // "Unauthorized" is also what AppSync returns for e.g. an invalid
+                    // API key, which is a different problem than a failed captcha.
+                    var isCaptchaError = body.errors.some(function (e) {
+                        return (e.message || "").includes("Turnstile");
+                    });
+                    this.errorMessage = isCaptchaError
+                        ? "Captcha verification failed. Please try again."
+                        : "Something went wrong posting your comment. Please try again.";
+                    this.showError = true;
+                    return;
+                }
+
+                if (!body || !body.data) {
+                    console.error("Unexpected response posting comment:", evt.detail.xhr.responseText);
+                    this.errorMessage = "Something went wrong posting your comment. Please try again.";
+                    this.showError = true;
+                    return;
+                }
+
+                this.showError = false;
+                document.getElementById('commentForm').reset();
+
+                // comments.html loads via htmx; ask it to refresh
+                document.body.dispatchEvent(new Event('refreshComments'));
+            }
+        };
+    });
+});
+</script>
+<div class="k9-comment-form" x-data="commentForm" x-on:htmx:after-request.window="handleAfterRequest($event)">
+    <h3 class="title is-4">Leave a comment</h3>
+    <form
+        id="commentForm"
+        hx-post="{{ site.Params.commentsURL }}"
+        hx-ext="json-enc"
+        hx-trigger="submit[turnstileTokenOrNotify()]"
+        hx-swap="none"
+        hx-headers="js:{...buildCommentHeaders()}"
+        hx-vals="js:{...buildCommentVals()}"
+    >
+        <div class="field">
+            <label class="label" for="name">Name</label>
+            <div class="control">
+                <input class="input" type="text" id="name" placeholder="Your Name" required />
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="comment">Comment</label>
+            <div class="control">
+                <textarea class="textarea" id="comment" placeholder="Your comment..." required></textarea>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="cf-turnstile" data-sitekey="{{ site.Params.turnstileSiteKey }}" data-size="flexible"></div>
+        </div>
+
+        <p x-show="showError" role="alert" x-text="errorMessage" class="has-text-danger" style="display:none;"></p>
+
+        <div class="field">
+            <div class="control">
+                <button type="submit" class="button is-primary">Post comment</button>
+            </div>
+        </div>
+    </form>
+</div>

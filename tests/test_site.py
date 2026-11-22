@@ -197,6 +197,35 @@ class Feed(unittest.TestCase):
         self.assertGreater(len(pages[1]["body"]), 400)
 
 
+class Comments(unittest.TestCase):
+    def setUp(self):
+        self.html = read("posts/griz/index.html")
+
+    def test_every_post_has_list_and_form(self):
+        for slug in os.listdir(os.path.join(PUBLIC, "posts")):
+            if os.path.isdir(os.path.join(PUBLIC, "posts", slug)) and slug != "page":
+                html = read(f"posts/{slug}/index.html")
+                self.assertIn('id="comments"', html, slug)
+                self.assertIn('id="commentForm"', html, slug)
+
+    def test_keyed_by_path_and_only_approved_shown(self):
+        self.assertIn("postSlug: {eq: window.location.pathname}, approved: {eq: true}", self.html)
+        self.assertIn("postSlug: window.location.pathname", self.html)
+
+    def test_reader_text_is_escaped(self):
+        self.assertIn("{{name}}", self.html)
+        self.assertIn("{{comment}}", self.html)
+        self.assertNotIn("{{{", self.html)
+
+    def test_posting_needs_turnstile(self):
+        self.assertIn('class="cf-turnstile"', self.html)
+        self.assertIn("x-turnstile-token", self.html)
+
+    def test_only_posts_load_comment_scripts(self):
+        self.assertIn("challenges.cloudflare.com", self.html)
+        self.assertNotIn("challenges.cloudflare.com", read("index.html"))
+
+
 class NotFound(unittest.TestCase):
     def test_404_links_to_the_feed(self):
         html = read("404.html")
