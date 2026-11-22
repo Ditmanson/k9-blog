@@ -6,7 +6,7 @@ tags: [food and play, markers, heeling, recall]
 description: "Pay the dog, make it a game, and don't sweat getting it perfect."
 ---
 
-For most behaviors, I say start with food and play. You pay the dog with food or a game for what you like, and take away something they want for what you don't. That's removal from the fun, with cues that show the fun isn't possible right now, like toys being put up or confinement.
+For most behaviors, I say start with food and play. You pay the dog with food or a game for what you like, and take away something they want for what you don't. That's removal from the fun, with cues that show the fun isn't possible right now, like toys being put up.
 
 It takes the novelty out of a behavior, lets you shape it without stress, and it's pretty much foolproof. By foolproof I mean this: even if you don't do it just right, you don't have to worry about creating trauma or making behaviors worse.
 
