@@ -1,0 +1,10 @@
+{{- /* A Post's thumbnail URL: its `image`, else its first YouTube video's, else empty. */ -}}
+{{- $src := "" -}}
+{{- with .Params.image -}}
+  {{- $src = . | relURL -}}
+{{- else -}}
+  {{- with findRESubmatch `\{\{<\s*youtube\s+(?:id=)?"?([A-Za-z0-9_-]{11})` .RawContent 1 -}}
+    {{- $src = printf "https://i.ytimg.com/vi/%s/hqdefault.jpg" (index (index . 0) 1) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $src -}}

@@ -1,0 +1,10 @@
+{{- /* Category chips, in data/categories.yaml order. A Category without Posts has no chip. */ -}}
+<nav class="k9-chips" aria-label="Categories" x-init="centerChip()">
+  <a href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>All</a>
+  {{- $here := .RelPermalink }}
+  {{- range hugo.Data.categories }}
+    {{- with site.GetPage (printf "/categories/%s" (urlize .)) }}
+  <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $here }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a>
+    {{- end }}
+  {{- end }}
+</nav>

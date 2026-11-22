@@ -1,0 +1,8 @@
+{{ define "main" }}
+<section class="section">
+  <div class="container">
+    <h1 class="k9-h2">{{ if eq .Data.Singular "tag" }}Tagged: {{ end }}{{ .Title }}</h1>
+    {{ partial "feed.html" (dict "page" . "paginator" (.Paginate .Pages.ByDate.Reverse)) }}
+  </div>
+</section>
+{{ end }}

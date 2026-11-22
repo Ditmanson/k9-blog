@@ -1,8 +1,9 @@
 {{ define "main" }}
 <section class="section">
   <div class="container">
-    <h1 class="k9-h2">{{ .Title }}</h1>
-    <p class="k9-body">Posts are on the way.</p>
+    <h1 class="k9-h2">Latest posts</h1>
+    {{ $posts := (where site.RegularPages "Section" "posts").ByDate.Reverse }}
+    {{ partial "feed.html" (dict "page" . "paginator" (.Paginate $posts)) }}
   </div>
 </section>
 {{ end }}

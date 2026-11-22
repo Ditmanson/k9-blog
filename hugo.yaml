@@ -1,8 +1,25 @@
 baseURL: "https://griz.sh/"
 title: "K9-Communication LLC’s Blog"
 
-# No Category or Tag pages yet (issue #9); their empty list pages would be in the sitemap.
-disableKinds: ["taxonomy", "term", "section"]
+taxonomies:
+  category: "categories"
+  tag: "tags"
+
+# Category and Tag names show as written ("e-collar", not "E-Collar").
+capitalizeListTitles: false
+
+# The Feed is the home page, so there's no /posts/ list.
+disableKinds: ["section"]
+
+# JSON on the home page is the search index, also read by the business site's chat agent.
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+pagination:
+  pagerSize: 12
 
 # Flat Post URLs, whatever folder the file is in (ADR 0001).
 permalinks:

@@ -1,0 +1,23 @@
+{{- /* One Card. The title's link stretches over the whole Card; Category and Tags sit above it. */ -}}
+<article class="k9-card">
+  <div class="k9-card-image">
+    {{- with partial "thumbnail.html" . }}
+    <img src="{{ . }}" alt="" loading="lazy" width="480" height="360">
+    {{- else }}
+    <img class="k9-card-logo" src="{{ "/images/logo.png" | relURL }}" alt="" loading="lazy" width="619" height="385">
+    {{- end }}
+  </div>
+  <div class="k9-card-body">
+    <p class="k9-card-meta">
+      {{- range .GetTerms "categories" }}<a class="k9-category" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> &middot; {{ end -}}
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+    </p>
+    <h2 class="k9-card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    <p class="k9-card-excerpt">{{ .Description | default (partial "plainText.html" . | truncate 180 | htmlUnescape) }}</p>
+    {{- with .GetTerms "tags" }}
+    <ul class="k9-tags" aria-label="Tags">
+      {{- range . }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end -}}
+    </ul>
+    {{- end }}
+  </div>
+</article>

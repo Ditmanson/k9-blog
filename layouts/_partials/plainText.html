@@ -1,0 +1,3 @@
+{{- /* A Post's words only: .Plain would pick up the video player's "Play video" label. */ -}}
+{{- $src := .RawContent | replaceRE `(?s)\{\{[<%].*?[>%]\}\}` "" -}}
+{{- return (.RenderString (dict "display" "block") $src | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace) -}}

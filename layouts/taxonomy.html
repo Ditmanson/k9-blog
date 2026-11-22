@@ -1,0 +1,10 @@
+{{ define "main" }}
+<section class="section">
+  <div class="container">
+    <h1 class="k9-h2">{{ .Title | strings.FirstUpper }}</h1>
+    <ul class="k9-tags">
+      {{ range .Data.Terms.Alphabetical }}<li><a href="{{ .Page.RelPermalink }}">{{ .Page.LinkTitle }}</a></li>{{ end }}
+    </ul>
+  </div>
+</section>
+{{ end }}

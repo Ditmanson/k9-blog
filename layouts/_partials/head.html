@@ -1,16 +1,22 @@
 <meta charset="utf-8">
 <title>{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ site.Title }}</title>
 
-{{ $description := .Description | default site.Params.description | truncate 160 }}
+{{ $description := .Description }}
+{{ $image := "images/logo.png" | absURL }}
+{{ if and .IsPage (eq .Section "posts") }}
+  {{ $description = $description | default (partial "plainText.html" .) }}
+  {{ with partial "thumbnail.html" . }}{{ $image = . | absURL }}{{ end }}
+{{ end }}
+{{ $description = $description | default site.Params.description | truncate 160 | htmlUnescape }}
 <meta name="description" content="{{ $description }}">
 <link rel="canonical" href="{{ .Permalink }}">
 
-<meta property="og:type" content="website">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:site_name" content="{{ site.Title }}">
 <meta property="og:title" content="{{ .Title }}">
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:url" content="{{ .Permalink }}">
-<meta property="og:image" content="{{ "images/logo.png" | absURL }}">
+<meta property="og:image" content="{{ $image }}">
 
 {{/* if-function: deprecation inside Bulma 1.0.4 itself, nothing to fix here. */}}
 {{ $sassOpts := dict "transpiler" "dartsass" "outputStyle" "compressed" "includePaths" (slice "node_modules") "silenceDeprecations" (slice "if-function") }}

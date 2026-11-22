@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover tests
 """
+import json
 import os
 import re
 import shutil
@@ -122,11 +123,104 @@ class CategoryRule(unittest.TestCase):
                 self.assertIn("exactly one Category", result.stdout + result.stderr)
 
 
+class Feed(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        posts = {f"gear-{i:02}.md": post("[Gear]", f"Gear body {i}. {'word ' * 120}").replace(
+            "2026-01-02", f"2026-01-{i:02}") for i in range(1, 15)}
+        posts["dog.md"] = post("[Dogs]", "{{< youtube cFSE0V6iDTQ >}}\n\nShe wouldn't stop.").replace(
+            "2026-01-02", "2026-02-01")
+        cls.tmp, result = build_posts(posts)
+        if result.returncode:
+            raise AssertionError(result.stdout + result.stderr)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def built(self, path):
+        with open(os.path.join(self.tmp, "public", path), encoding="utf-8") as f:
+            return f.read()
+
+    def cards(self, path):
+        return re.findall(r'<article class="k9-card">.*?</article>', self.built(path), re.S)
+
+    def test_newest_first_twelve_then_the_rest(self):
+        first, second = self.cards("index.html"), self.cards("page/2/index.html")
+        self.assertEqual((len(first), len(second)), (12, 3))
+        self.assertIn('href="/posts/dog/"', first[0])
+        self.assertIn('href="/posts/gear-14/"', first[1])
+        self.assertIn('href="/posts/gear-01/"', second[-1])
+
+    def test_card_contents(self):
+        card = self.cards("index.html")[0]
+        self.assertIn("i.ytimg.com/vi/cFSE0V6iDTQ/", card)
+        self.assertIn('href="/categories/dogs/"', card)
+        self.assertIn('href="/tags/e-collar/"', card)
+        for expected in ("A Test Post", "February 1, 2026", "She wouldn’t stop."):
+            self.assertIn(expected, text(card))
+        self.assertNotIn("Play video", card)
+
+    def test_more_loads_on_scroll_and_is_a_link_without_js(self):
+        more = re.search(r'<a [^>]*class="[^"]*k9-more[^>]*>', self.built("index.html")).group(0)
+        self.assertIn('href="/page/2/"', more)
+        self.assertIn('hx-get="/page/2/"', more)
+        self.assertIn('href="/"', self.built("page/2/index.html"))
+
+    def test_search_gets_a_quoted_index_url(self):
+        self.assertIn("""x-data="k9Search('/index.json')\"""", self.built("index.html"))
+
+    def test_chips_hide_empty_categories(self):
+        chips = re.search(r'<nav class="k9-chips".*?</nav>', self.built("index.html"), re.S).group(0)
+        self.assertEqual(text(chips), "All Gear Dogs")
+
+    def test_category_and_tag_pages_are_feeds(self):
+        self.assertEqual(len(self.cards("categories/dogs/index.html")), 1)
+        self.assertEqual(len(self.cards("tags/recall/index.html")), 12)
+
+    def test_index_works_for_search_and_the_chat_agent(self):
+        pages = json.loads(self.built("index.json"))
+        self.assertEqual(len(pages), 15)
+        dog = pages[0]
+        self.assertEqual(dog["url"], "https://griz.sh/posts/dog/")
+        self.assertEqual(dog["tags"], ["recall", "e-collar"])
+        self.assertEqual(dog["category"], "Dogs")
+        self.assertIn('class="k9-card"', dog["card"])
+        self.assertNotIn("youtube", dog["summary"])
+        for p in pages:
+            self.assertLessEqual(len(p["summary"]), 401)
+            self.assertNotIn("&rsquo;", p["summary"])
+        self.assertGreater(len(pages[1]["body"]), 400)
+
+
 class NotFound(unittest.TestCase):
     def test_404_links_to_the_feed(self):
         html = read("404.html")
         main = re.search(r"<main>(.*?)</main>", html, re.S).group(1)
         self.assertIn('href="/"', main)
+
+
+class SeedPosts(unittest.TestCase):
+    def setUp(self):
+        self.posts = {p["url"].rstrip("/").rsplit("/", 1)[-1]: p for p in json.loads(read("index.json"))}
+
+    def test_seeds_are_in_their_categories(self):
+        seeds = {
+            "Gear": ["agitation-collar", "e-collar", "flat-collar", "prong-collar", "slip-collar"],
+            "Dogs": ["griz", "denali", "odie"],
+            "Training": ["food-and-play", "escape-and-avoidance"],
+            "Food": ["what-my-dogs-eat"],
+            "Other": ["dogs-need-enrichment"],
+        }
+        for category, slugs in seeds.items():
+            for slug in slugs:
+                with self.subTest(slug=slug):
+                    self.assertEqual(self.posts[slug]["category"], category)
+                    self.assertRegex(read(f"posts/{slug}/index.html").split("<main>")[1].split("</main>")[0],
+                                     r'href="?https://k9-communication\.com/')
+
+    def test_enrichment_has_the_walk(self):
+        self.assertIn("cFSE0V6iDTQ", read("posts/dogs-need-enrichment/index.html"))
 
 
 class Links(unittest.TestCase):

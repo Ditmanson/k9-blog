@@ -1,0 +1,17 @@
+{{- /* The search index. Also read by caninecommunication's chat agent, which uses
+       title/url/tags/summary: keep those, and keep summary at 400 characters (its
+       spend math is sized on that). truncate HTML-escapes, so htmlUnescape after it. */ -}}
+{{- $posts := slice -}}
+{{- range (where site.RegularPages "Section" "posts").ByDate.Reverse -}}
+  {{- $text := partial "plainText.html" . -}}
+  {{- $posts = $posts | append (dict
+      "title" .Title
+      "url" .Permalink
+      "tags" (.Params.tags | default slice)
+      "summary" ($text | truncate 399 | htmlUnescape)
+      "category" (delimit (.Params.categories | default slice) "")
+      "body" $text
+      "card" (partial "card.html" . | string)
+  ) -}}
+{{- end -}}
+{{- $posts | jsonify -}}

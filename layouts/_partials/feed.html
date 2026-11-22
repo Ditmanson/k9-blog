@@ -1,0 +1,72 @@
+{{- /* Search, Category chips, and one page of Cards. Takes (dict "page" . "paginator" $p). */ -}}
+{{- $p := .paginator -}}
+<div x-data="k9Search('{{ "/index.json" | relURL }}')">
+  <div class="k9-search" x-cloak>
+    <input class="input" type="search" x-model="query" @focus="load()" @input.debounce.200ms="search()"
+           placeholder="Search posts" aria-label="Search posts">
+  </div>
+  {{ partial "chips.html" .page }}
+
+  <div x-show="active" x-cloak>
+    <p class="k9-search-status" role="status" x-text="status"></p>
+    <div class="k9-feed">
+      <template x-for="r in results" :key="r.url"><div class="k9-result" x-html="r.card"></div></template>
+    </div>
+  </div>
+
+  <div x-show="!active">
+    <div class="k9-feed k9-feed-page">
+      {{ range $p.Pages }}{{ partial "card.html" . }}{{ end }}
+      {{ if $p.HasNext }}
+        {{/* Scrolling to this swaps it for the next page's Cards and that page's own link. Without JS it's just a link. */}}
+        <a class="button k9-more" href="{{ $p.Next.URL }}" hx-get="{{ $p.Next.URL }}" hx-trigger="intersect once, click"
+           hx-select=".k9-feed-page > *" hx-target="this" hx-swap="outerHTML" hx-sync="this:drop">Older posts</a>
+      {{ end }}
+    </div>
+    {{ if $p.HasPrev }}
+      <p class="mt-5"><a class="k9-textlink" href="{{ $p.Prev.URL }}">&larr; Newer posts</a></p>
+    {{ end }}
+  </div>
+</div>
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('k9Search', (indexURL) => ({
+    query: '', results: [], status: '', fuse: null, loading: null,
+    // On a phone the current Category's chip can start off-screen.
+    centerChip() {
+      const row = this.$root.querySelector('.k9-chips');
+      const on = row?.querySelector('[aria-current]');
+      if (on) row.scrollLeft = on.offsetLeft + on.offsetWidth / 2 - row.clientWidth / 2;
+    },
+    get active() { return this.query.trim() !== ''; },
+    // Fuse and the index are only fetched once someone goes to search.
+    load() {
+      this.loading ??= Promise.all([
+        new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js';
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.append(s);
+        }),
+        fetch(indexURL).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      ]).then(([, posts]) => {
+        this.fuse = new Fuse(posts, {
+          keys: [{ name: 'title', weight: 4 }, { name: 'tags', weight: 3 }, { name: 'category', weight: 2 }, { name: 'body', weight: 1 }],
+          threshold: 0.2,
+          ignoreLocation: true,
+          useExtendedSearch: true, // every word has to match
+        });
+      }).catch(() => { this.loading = null; });
+      return this.loading;
+    },
+    async search() {
+      if (!this.active) { this.results = []; return; }
+      await this.load();
+      if (!this.fuse) { this.results = []; this.status = 'Search didn’t load. Try again.'; return; }
+      this.results = this.fuse.search(this.query.trim()).map((r) => r.item);
+      this.status = this.results.length === 1 ? '1 post' : `${this.results.length || 'No'} posts`;
+    },
+  }));
+});
+</script>
