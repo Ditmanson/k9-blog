@@ -399,6 +399,74 @@ $k9-tones: (
   font-style: normal;
 }
 
+// Operant conditioning quadrant (layouts/_shortcodes/quadrant.html): this
+// Post's corners stay solid, the other style's go dashed and link to its Post.
+.content figure.k9-quadrant-fig { margin: 2rem 0 2.25rem; text-align: left; }
+.k9-quadrant-fig figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+  font-style: normal;
+}
+.k9-quadrant {
+  display: grid;
+  gap: 6px;
+}
+.k9-quadrant > [role="row"] {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr 1fr;
+  gap: 6px;
+}
+.k9-q-head > span,
+.k9-q-row {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.25rem 0.5rem;
+}
+.k9-q-row { align-self: center; }
+.k9-quadrant small {
+  display: block;
+  font-family: "Barlow", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.content .k9-q-cell {
+  min-height: 8rem;
+  padding: 0.9rem;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: hsl(166, 31%, 14%);
+}
+.content .k9-q-cell strong {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  color: inherit;
+}
+.k9-q-cell.is-ff { background: var(--k9-ff); }
+.k9-q-cell.is-trad { background: var(--k9-trad); }
+.content .k9-q-cell.is-muted {
+  background: transparent;
+  border: 2px dashed var(--k9-mauve);
+  color: inherit;
+  text-decoration: none;
+}
+.content .k9-q-cell.is-muted.is-trad { border-color: hsl(166, 24%, 55%); }
+.content .k9-q-cell.is-muted:hover strong { text-decoration: underline; }
+// On phones each row's name sits above its two corners, so the words fit.
+@media screen and (max-width: 480px) {
+  .k9-quadrant > [role="row"] { grid-template-columns: 1fr 1fr; }
+  .k9-q-head > span:first-child { display: none; }
+  .k9-q-row { grid-column: 1 / -1; }
+  .k9-q-row small { display: inline; margin-left: 0.4rem; }
+  .content .k9-q-cell { min-height: 6.5rem; padding: 0.65rem; }
+  .content .k9-q-cell strong { font-size: 1.25rem; }
+}
+
 // Comments
 .k9-comments {
   margin-top: 3rem;

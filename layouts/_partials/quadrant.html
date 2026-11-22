@@ -1,0 +1,20 @@
+{{- /* Operant conditioning quadrant, from k9-communication.com's, with each corner named.
+       Pass (dict "focus" "ff"|"trad"): the other style's cells are muted and link to its Post. */ -}}
+{{- $focus := .focus -}}
+<div class="k9-quadrant" role="table" aria-label="The four corners of operant conditioning">
+  <div role="row" class="k9-q-head">
+    <span role="columnheader"></span>
+    <span role="columnheader">Positive<small>add something</small></span>
+    <span role="columnheader">Negative<small>take something away</small></span>
+  </div>
+  <div role="row">
+    <span role="rowheader" class="k9-q-row">Reinforcement<small>behavior goes up</small></span>
+    {{ partial "quadrant-cell.html" (dict "focus" $focus "style" "ff" "label" "Give a reward" "name" "Positive reinforcement") }}
+    {{ partial "quadrant-cell.html" (dict "focus" $focus "style" "trad" "label" "Release pressure" "name" "Negative reinforcement") }}
+  </div>
+  <div role="row">
+    <span role="rowheader" class="k9-q-row">Punishment<small>behavior goes down</small></span>
+    {{ partial "quadrant-cell.html" (dict "focus" $focus "style" "trad" "label" "Apply a correction" "name" "Positive punishment") }}
+    {{ partial "quadrant-cell.html" (dict "focus" $focus "style" "ff" "label" "Remove food or fun" "name" "Negative punishment") }}
+  </div>
+</div>

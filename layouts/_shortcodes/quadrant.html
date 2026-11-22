@@ -1,0 +1,6 @@
+{{- /* {{< quadrant focus="ff" >}} or focus="trad": the operant conditioning grid with this Post's two corners lit.
+       The dashed corners link to the other style's Post. */ -}}
+<figure class="k9-quadrant-fig">
+  {{ partial "quadrant.html" (dict "focus" (.Get "focus")) }}
+  <figcaption>The four corners of operant conditioning. {{ if eq (.Get "focus") "ff" }}<a href="{{ "/posts/escape-and-avoidance/" | relURL }}">Escape and avoidance</a>{{ else }}<a href="{{ "/posts/food-and-play/" | relURL }}">Food and play</a>{{ end }} covers the dashed two.</figcaption>
+</figure>

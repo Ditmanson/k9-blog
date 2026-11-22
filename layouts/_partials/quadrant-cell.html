@@ -1,0 +1,7 @@
+{{- /* One quadrant cell; see quadrant.html. */ -}}
+{{- $urls := dict "ff" "/posts/food-and-play/" "trad" "/posts/escape-and-avoidance/" -}}
+{{- if ne .focus .style -}}
+<a role="cell" class="k9-q-cell is-{{ .style }} is-muted" href="{{ index $urls .style | relURL }}"><strong>{{ .label }}</strong><small>{{ .name }}</small></a>
+{{- else -}}
+<span role="cell" class="k9-q-cell is-{{ .style }}"><strong>{{ .label }}</strong><small>{{ .name }}</small></span>
+{{- end -}}

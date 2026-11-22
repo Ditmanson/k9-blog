@@ -344,6 +344,33 @@ class SeedPosts(unittest.TestCase):
         self.assertIn("gM7BneAEtOY", html)
         self.assertIn("nDTvE199qhM", self.posts["food-and-play"]["card"])
 
+    def test_each_training_post_lights_its_two_corners(self):
+        for slug, lit, other in (
+            ("food-and-play", {"Positive reinforcement", "Negative punishment"}, "escape-and-avoidance"),
+            ("escape-and-avoidance", {"Negative reinforcement", "Positive punishment"}, "food-and-play"),
+        ):
+            with self.subTest(slug=slug):
+                html = read(f"posts/{slug}/index.html")
+                cells = re.findall(r'<(span|a) role="?cell"?([^>]*)>(.*?)</\1>', html, re.S)
+                self.assertEqual(len(cells), 4)
+                self.assertNotIn("or freedom", text(html))
+                on = [c for c in cells if "is-muted" not in c[1]]
+                self.assertEqual({re.search(r"<small>(.*?)</small>", c[2]).group(1) for c in on}, lit)
+                for cell in cells:
+                    if cell not in on:
+                        self.assertIn(f"/posts/{other}/", cell[1])
+                things = re.findall(r'<h2 id="?([1-4]-[^">]+)', html)
+                self.assertEqual([t[0] for t in things], list("1234"))
+                self.assertEqual(set(re.findall(r'href="#([1-4]-[^"]+)"', html)), set(things))
+
+    def test_escape_and_avoidance_has_its_rules_and_research(self):
+        html = read("posts/escape-and-avoidance/index.html")
+        for claim in ("Negative reinforcement is how we bulletproof", "never part of the plan", "grandma",
+                      "always be escapable", "Start low", "Premack", "rodents, not dogs"):
+            self.assertIn(claim, text(html))
+        self.assertNotRegex(text(html), r"\bGAP Q")
+        self.assertIn("SnMAGTHxG2Y", self.posts["escape-and-avoidance"]["card"])
+
     def test_e_collar_is_the_invisible_leash_and_negative_reinforcement_only(self):
         html = read("posts/e-collar/index.html")
         self.assertNotRegex(text(html), r"(?i)punish|superstitio|changed my mind")
