@@ -140,6 +140,23 @@ class Timeline(unittest.TestCase):
             self.assertIn("Wake up. We walk.", json.load(f)[0]["body"])
 
 
+class Level(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp, result = build_posts({"level.md": post("[Gear]", "{{< level 15 >}}")})
+        cls.addClassCleanup(shutil.rmtree, cls.tmp, ignore_errors=True)
+        if result.returncode:
+            raise AssertionError(result.stdout + result.stderr)
+        with open(os.path.join(cls.tmp, "public/posts/level/index.html"), encoding="utf-8") as f:
+            cls.html = f.read()
+
+    def test_marks_the_starting_level(self):
+        figure = re.search(r"<figure.*?</figure>", self.html, re.S).group(0)
+        self.assertIn("--k9-start: 15%", figure)
+        self.assertIn("Start at 15%", text(figure))
+        self.assertIn("go up", text(figure))
+
+
 class CategoryRule(unittest.TestCase):
     def test_build_fails_without_exactly_one_known_category(self):
         for categories in ("[]", "[Gear, Dogs]", "[Cats]"):
@@ -303,6 +320,13 @@ class SeedPosts(unittest.TestCase):
         self.assertIn('href="https://k9-communication.com/training-records/griz/"', html)
         self.assertRegex(html, r'(?s)<h2 [^>]*k9-biglink[^>]*><a href="https://k9-communication\.com/training-records/griz/"'
                                r'[^<]*</a>\s*</h2>\s*<h2 id="?search-and-rescue')
+
+    def test_e_collar_is_the_invisible_leash_and_negative_reinforcement_only(self):
+        html = read("posts/e-collar/index.html")
+        self.assertNotRegex(text(html), r"(?i)punish|superstitio|changed my mind")
+        self.assertIn("E-Collars: The Invisible Leash", text(html))
+        self.assertIn('class="k9-level"', html)
+        self.assertIn("Ki8EG31XYqU", self.posts["e-collar"]["card"])
 
 
 class Links(unittest.TestCase):

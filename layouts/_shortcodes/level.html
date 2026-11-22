@@ -1,0 +1,8 @@
+{{- /* {{< level 15 >}}: an e-collar's 0-100% power, marked where to start, with the rest as room to go up. */ -}}
+{{- $n := int (.Get 0) -}}
+<figure class="k9-level" style="{{ printf "--k9-start: %d%%" $n | safeCSS }}">
+  <p class="k9-level-start"><strong>Start at {{ $n }}%</strong></p>
+  <div class="k9-level-track" aria-hidden="true"></div>
+  <p class="k9-level-ends" aria-hidden="true"><span>0</span><span>100%</span></p>
+  <figcaption>Only go up if the dog doesn&rsquo;t respond.</figcaption>
+</figure>

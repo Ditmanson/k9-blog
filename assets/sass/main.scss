@@ -253,6 +253,35 @@ h1, h2, h3, h4, h5, h6,
   text-underline-offset: 0.2em;
 }
 
+// Starting level on a 0-100% scale (layouts/_shortcodes/level.html)
+.content figure.k9-level {
+  margin: 1.75rem 0 2rem;
+  text-align: left;
+}
+.content .k9-level p { margin: 0; }
+.k9-level-start {
+  margin-left: var(--k9-start) !important;
+  padding: 0 0 0.35rem 0.5rem;
+  border-left: 4px solid var(--k9-gold);
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+.k9-level-track {
+  height: 2.25rem;
+  border-radius: 4px;
+  background: linear-gradient(to right,
+    var(--k9-trad) 0 var(--k9-start),
+    var(--k9-gold) var(--k9-start) calc(var(--k9-start) + 4px),
+    var(--bulma-scheme-main-ter) calc(var(--k9-start) + 4px) 100%);
+}
+.k9-level-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+.content .k9-level figcaption { font-style: normal; }
+
 // A heading that is one big link: "## [Text](url) {.k9-biglink}"
 .content h2.k9-biglink {
   margin-block: 2.25rem;
