@@ -10,12 +10,12 @@ Single-context layout (`GLOSSARY.md` + `docs/adr/` at the repo root). See `docs/
 
 ## Project
 
-K9-Communication LLC's Blog: the casual dog blog that replaces griz.sh on that domain. Companion to the business site in `../caninecommunication` (k9-communication.com), whose stack and theme it shares.
+K9-Communication LLC's Blog: the casual dog blog live at griz.sh, where it replaced the old site. Companion to the business site in `../caninecommunication` (k9-communication.com), whose stack and theme it shares.
 
 ## Workflow
 
-- Until cutover to griz.sh, push freely. After cutover a push deploys the live blog: push only when the owner says so.
-- Leave `../griz` and live griz.sh alone until cutover.
+- **The blog is live** at griz.sh on Amplify, which auto-builds `main`. A push is a deploy: commit freely, but push only when the owner says so.
+- `../griz` is the old site, retired. Don't add to it.
 - Seed and drafted Posts are published under the owner's name: use only facts from the owner's own content, never invent anecdotes.
 - **Test before committing:** `python3 -m unittest discover tests` (needs Hugo, `sass` on PATH, and `npm ci`), plus a visual check at phone width (~390px).
 - Test-driven: failing test, then the change.

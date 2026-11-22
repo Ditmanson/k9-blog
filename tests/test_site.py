@@ -50,9 +50,9 @@ class Scaffold(unittest.TestCase):
     def test_canonical_is_griz_sh(self):
         self.assertIn('<link rel="canonical" href="https://griz.sh/">', self.html)
 
-    def test_preview_is_noindex_on_every_page(self):
-        for path in ("index.html", "404.html", "posts/griz/index.html"):
-            self.assertIn('<meta name="robots" content="noindex, nofollow">', read(path))
+    def test_live_site_is_indexable(self):
+        for path in ("index.html", "posts/griz/index.html"):
+            self.assertNotIn("noindex", read(path))
 
     def test_no_chatbot(self):
         self.assertNotIn("k9-chat", self.html)
