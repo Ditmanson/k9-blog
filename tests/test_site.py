@@ -288,6 +288,9 @@ class SeedPosts(unittest.TestCase):
     def test_enrichment_card_shows_the_walk(self):
         self.assertIn("cFSE0V6iDTQ", self.posts["dogs-need-enrichment"]["card"])
 
+    def test_agitation_collar_does_not_claim_protection_training(self):
+        self.assertIn("I don’t train protection", text(read("posts/agitation-collar/index.html")))
+
 
 class Links(unittest.TestCase):
     def test_internal_links_and_anchors_resolve(self):
