@@ -117,6 +117,29 @@ class PostPage(unittest.TestCase):
         self.assertIn("youtube-nocookie.com/embed/", self.html)
 
 
+class Timeline(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp, result = build_posts({"day.md": post("[Other]", (
+            "{{< timeline >}}\n1. **Wake up.** We walk. [Walk](#1-walk)\n"
+            "2. **Dinner.** They eat.\n{{< /timeline >}}\n\n## 1. Walk"))})
+        cls.addClassCleanup(shutil.rmtree, cls.tmp, ignore_errors=True)
+        if result.returncode:
+            raise AssertionError(result.stdout + result.stderr)
+        with open(os.path.join(cls.tmp, "public/posts/day/index.html"), encoding="utf-8") as f:
+            cls.html = f.read()
+
+    def test_is_an_ordered_list_of_stops(self):
+        day = re.search(r'<div class="k9-timeline">(.*?)</div>', self.html, re.S).group(1)
+        self.assertEqual(day.count("<li>"), 2)
+        self.assertIn("<ol>", day)
+        self.assertIn('href="#1-walk"', day)
+
+    def test_stops_are_searchable(self):
+        with open(os.path.join(self.tmp, "public/index.json"), encoding="utf-8") as f:
+            self.assertIn("Wake up. We walk.", json.load(f)[0]["body"])
+
+
 class CategoryRule(unittest.TestCase):
     def test_build_fails_without_exactly_one_known_category(self):
         for categories in ("[]", "[Gear, Dogs]", "[Cats]"):
@@ -254,6 +277,16 @@ class SeedPosts(unittest.TestCase):
 
     def test_enrichment_has_the_walk(self):
         self.assertIn("cFSE0V6iDTQ", read("posts/dogs-need-enrichment/index.html"))
+
+    def test_enrichment_has_a_day_and_eight_things_it_links_to(self):
+        html = read("posts/dogs-need-enrichment/index.html")
+        self.assertIn('class="k9-timeline"', html)
+        things = re.findall(r'<h2 id="?([1-8]-[^">]+)', html)
+        self.assertEqual([t[0] for t in things], list("12345678"))
+        self.assertEqual(set(re.findall(r'href="#([1-8]-[^"]+)"', html)), set(things))
+
+    def test_enrichment_card_shows_the_walk(self):
+        self.assertIn("cFSE0V6iDTQ", self.posts["dogs-need-enrichment"]["card"])
 
 
 class Links(unittest.TestCase):

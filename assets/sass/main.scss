@@ -287,6 +287,75 @@ h1, h2, h3, h4, h5, h6,
   .k9r-play { transition: box-shadow 0.25s; }
 }
 
+// Numbered things in a Post ("## 1. Be a dog"): one color per number, on the
+// heading and on every link to it.
+$k9-tones: (
+  1: hsl(166, 30%, 72%),
+  2: hsl(28, 70%, 76%),
+  3: hsl(43, 74%, 68%),
+  4: hsl(88, 34%, 70%),
+  5: hsl(280, 22%, 82%),
+  6: hsl(205, 45%, 78%),
+  7: hsl(185, 38%, 76%),
+  8: hsl(350, 50%, 82%)
+);
+.k9-post .content {
+  @each $n, $tone in $k9-tones {
+    a[href^="##{$n}-"] {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.5rem;
+      margin: 0.2rem 0.3rem 0.2rem 0;
+      padding: 0.25rem 0.85rem;
+      border-radius: 1.25rem;
+      background: #{$tone};
+      color: hsl(166, 31%, 12%);
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    h2[id^="#{$n}-"] {
+      border-left: 0.5rem solid #{$tone};
+      padding-left: 0.6rem;
+    }
+  }
+}
+
+// A day, top to bottom (layouts/_shortcodes/timeline.html)
+.content .k9-timeline ol {
+  list-style: none;
+  margin: 1.5rem 0 2rem 0.5rem;
+  border-left: 3px solid var(--k9-mauve);
+}
+.content .k9-timeline li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 1.4rem 1.4rem;
+}
+.k9-timeline li::before {
+  content: "";
+  position: absolute;
+  left: -0.55rem;
+  top: 0.35rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--k9-gold);
+}
+.content .k9-timeline li > strong:first-child {
+  display: block;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+// The tags sit on their own line under the stop.
+.content .k9-timeline li > em:last-child {
+  display: block;
+  margin-top: 0.25rem;
+  font-style: normal;
+}
+
 // Comments
 .k9-comments {
   margin-top: 3rem;

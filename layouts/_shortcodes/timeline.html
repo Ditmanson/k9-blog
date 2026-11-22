@@ -1,0 +1,6 @@
+{{- /* {{< timeline >}} ... {{< /timeline >}}: wraps a Markdown ordered list and sets it as a day.
+       Start each stop with a bold name. End it with its tags in italics, linking numbered headings:
+       1. **Wake up.** What happens. *[Walk](#1-walk)* */ -}}
+<div class="k9-timeline">
+{{ .Inner | .Page.RenderString (dict "display" "block") }}
+</div>
