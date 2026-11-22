@@ -335,6 +335,15 @@ class SeedPosts(unittest.TestCase):
         self.assertRegex(html, r'(?s)<h2 [^>]*k9-biglink[^>]*><a href="https://k9-communication\.com/training-records/denali/"'
                                r'[^<]*</a>\s*</h2>\s*<h2 id="?adventure-companion')
 
+    def test_food_and_play_is_the_foundation(self):
+        html = read("posts/food-and-play/index.html")
+        for claim in ("foundation", "uh-uhhh", "can’t cause any trauma", "always some drive", "Granny’s rule", "Everest"):
+            self.assertIn(claim, text(html))
+        self.assertNotRegex(text(html), r"\bGAP Q|toys being put up")
+        self.assertIn('class="k9-timeline"', html)
+        self.assertIn("gM7BneAEtOY", html)
+        self.assertIn("nDTvE199qhM", self.posts["food-and-play"]["card"])
+
     def test_e_collar_is_the_invisible_leash_and_negative_reinforcement_only(self):
         html = read("posts/e-collar/index.html")
         self.assertNotRegex(text(html), r"(?i)punish|superstitio|changed my mind")
