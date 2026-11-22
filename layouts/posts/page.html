@@ -1,0 +1,24 @@
+{{ define "main" }}
+{{- $categories := .Params.categories | default slice -}}
+{{- if or (ne (len $categories) 1) (not (in hugo.Data.categories (index (append "" $categories) 0))) -}}
+  {{- errorf "%s: a Post needs exactly one Category from data/categories.yaml, got %v" .File.Path $categories -}}
+{{- end -}}
+<article class="section">
+  <div class="container k9-post">
+    <h1 class="k9-h2">{{ .Title }}</h1>
+    <p class="k9-post-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      {{ range $categories }}&middot; <span class="k9-category">{{ . }}</span>{{ end }}
+    </p>
+    <div class="content k9-body">
+      {{ .Content }}
+    </div>
+    {{ with .Params.tags }}
+      <ul class="k9-tags" aria-label="Tags">
+        {{ range . }}<li>{{ . }}</li>{{ end }}
+      </ul>
+    {{ end }}
+  </div>
+</article>
+{{ if .HasShortcode "youtube" }}{{ partial "videoPlayer.html" . }}{{ end }}
+{{ end }}

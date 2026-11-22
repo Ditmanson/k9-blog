@@ -2,7 +2,12 @@ baseURL: "https://griz.sh/"
 title: "K9-Communication LLC’s Blog"
 
 # No Category or Tag pages yet (issue #9); their empty list pages would be in the sitemap.
-disableKinds: ["taxonomy", "term"]
+disableKinds: ["taxonomy", "term", "section"]
+
+# Flat Post URLs, whatever folder the file is in (ADR 0001).
+permalinks:
+  page:
+    posts: "/posts/:slugorcontentbasename/"
 
 params:
   description: "Gear, dogs, training, food, and adventures: the dog blog of K9-Communication LLC in Colorado Springs, CO."

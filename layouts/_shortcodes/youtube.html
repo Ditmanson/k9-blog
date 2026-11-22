@@ -1,0 +1,12 @@
+{{- /* Click-to-load player, the same one as the business site's "My dogs are my resume" carousel.
+       Replaces Hugo's built-in youtube shortcode, same syntax. Without JS it's a link to YouTube. */ -}}
+{{- $id := "" -}}
+{{- if .IsNamedParams }}{{ $id = .Get "id" }}{{ else }}{{ $id = .Get 0 }}{{ end -}}
+{{- if not $id }}{{ errorf "youtube shortcode needs a video ID: %s" .Position }}{{ end -}}
+<div class="k9r-video" x-data="k9Video('{{ $id }}')">
+  <a class="k9r-thumb" x-ref="frame" href="https://www.youtube.com/watch?v={{ $id }}" @click.prevent="play()">
+    <img src="https://i.ytimg.com/vi/{{ $id }}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
+    <span class="k9r-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+    <span class="is-sr-only">Play video</span>
+  </a>
+</div>

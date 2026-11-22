@@ -1,0 +1,19 @@
+{{- /* Alpine component behind the youtube shortcode: the iframe is only created on tap. */ -}}
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('k9Video', (id) => ({
+    play() {
+      const stage = this.$refs.frame;
+      if (stage.querySelector('iframe')) return;
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+      f.title = 'YouTube video';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      stage.classList.add('is-playing');
+      stage.append(f);
+      f.focus();
+    },
+  }));
+});
+</script>

@@ -61,6 +61,74 @@ class Scaffold(unittest.TestCase):
         self.assertIn("Sitemap: https://griz.sh/sitemap.xml", read("robots.txt"))
 
 
+def build_posts(posts):
+    """Builds the blog with these Posts ({path: front matter and body}) as its only content."""
+    tmp = tempfile.mkdtemp(prefix="k9-blog-posts-")
+    for path, source in posts.items():
+        full = os.path.join(tmp, "content", "posts", path)
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(full, "w", encoding="utf-8") as f:
+            f.write(source)
+    result = subprocess.run(
+        ["hugo", "--panicOnWarning", "--contentDir", os.path.join(tmp, "content"),
+         "-d", os.path.join(tmp, "public")],
+        cwd=ROOT, capture_output=True, text=True)
+    return tmp, result
+
+
+def post(categories, body="Body."):
+    return (f'---\ntitle: "A Test Post"\ndate: 2026-01-02\ncategories: {categories}\n'
+            f'tags: [recall, e-collar]\n---\n\n{body}\n')
+
+
+class PostPage(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp, result = build_posts({
+            "flat.md": post("[Gear]", "{{< youtube cFSE0V6iDTQ >}}"),
+            "nested/deep.md": post("[Dogs]"),
+        })
+        if result.returncode:
+            raise AssertionError(result.stdout + result.stderr)
+        with open(os.path.join(cls.tmp, "public/posts/flat/index.html"), encoding="utf-8") as f:
+            cls.html = f.read()
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_url_is_flat(self):
+        self.assertTrue(os.path.exists(os.path.join(self.tmp, "public/posts/deep/index.html")))
+
+    def test_shows_title_date_category_and_tags(self):
+        body = text(re.search(r"<main>(.*?)</main>", self.html, re.S).group(1))
+        for expected in ("A Test Post", "January 2, 2026", "Gear", "recall", "e-collar"):
+            self.assertIn(expected, body)
+
+    def test_youtube_loads_on_tap_and_links_out_without_js(self):
+        self.assertNotIn("<iframe", self.html)
+        self.assertIn('href="https://www.youtube.com/watch?v=cFSE0V6iDTQ"', self.html)
+        self.assertIn('src="https://i.ytimg.com/vi/cFSE0V6iDTQ/hqdefault.jpg"', self.html)
+        self.assertIn("youtube-nocookie.com/embed/", self.html)
+
+
+class CategoryRule(unittest.TestCase):
+    def test_build_fails_without_exactly_one_known_category(self):
+        for categories in ("[]", "[Gear, Dogs]", "[Cats]"):
+            with self.subTest(categories=categories):
+                tmp, result = build_posts({"bad.md": post(categories)})
+                shutil.rmtree(tmp, ignore_errors=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("exactly one Category", result.stdout + result.stderr)
+
+
+class NotFound(unittest.TestCase):
+    def test_404_links_to_the_feed(self):
+        html = read("404.html")
+        main = re.search(r"<main>(.*?)</main>", html, re.S).group(1)
+        self.assertIn('href="/"', main)
+
+
 class Links(unittest.TestCase):
     def test_internal_links_and_anchors_resolve(self):
         broken = set()
