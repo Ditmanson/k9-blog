@@ -1,0 +1,28 @@
+<meta charset="utf-8">
+<title>{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ site.Title }}</title>
+
+{{ $description := .Description | default site.Params.description | truncate 160 }}
+<meta name="description" content="{{ $description }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:image" content="{{ "images/logo.png" | absURL }}">
+
+{{/* if-function: deprecation inside Bulma 1.0.4 itself, nothing to fix here. */}}
+{{ $sassOpts := dict "transpiler" "dartsass" "outputStyle" "compressed" "includePaths" (slice "node_modules") "silenceDeprecations" (slice "if-function") }}
+{{ $style := resources.Get "sass/main.scss" | css.Sass $sassOpts | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- htmx 2.x defaults to selfRequestsOnly:true, blocking cross-origin requests. Comments call
+     AppSync on a different origin, so this must be disabled before htmx processes the page. -->
+<meta name="htmx-config" content='{"selfRequestsOnly": false}'>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js" defer></script>

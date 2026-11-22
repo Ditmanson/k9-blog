@@ -1,0 +1,11 @@
+baseURL: "https://griz.sh/"
+title: "K9-Communication LLC’s Blog"
+
+# No Category or Tag pages yet (issue #9); their empty list pages would be in the sitemap.
+disableKinds: ["taxonomy", "term"]
+
+params:
+  description: "Gear, dogs, training, food, and adventures: the dog blog of K9-Communication LLC in Colorado Springs, CO."
+
+  # The business site, linked from the header and footer.
+  businessURL: "https://k9-communication.com/"
