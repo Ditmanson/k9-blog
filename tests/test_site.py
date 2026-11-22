@@ -321,6 +321,20 @@ class SeedPosts(unittest.TestCase):
         self.assertRegex(html, r'(?s)<h2 [^>]*k9-biglink[^>]*><a href="https://k9-communication\.com/training-records/griz/"'
                                r'[^<]*</a>\s*</h2>\s*<h2 id="?search-and-rescue')
 
+    def test_denali_has_her_photos_crew_and_current_claims(self):
+        html = read("posts/denali/index.html")
+        self.assertIn("/images/denali/card.jpg", self.posts["denali"]["card"])
+        photos = re.findall(r'<img src="(/images/denali/[^"]+)"', html)
+        self.assertEqual(len(photos), 4)
+        for photo in photos:
+            with open(os.path.join(PUBLIC, photo.lstrip("/")), "rb") as f:
+                self.assertNotIn(b"Exif", f.read(), photo)
+        for claim in ("negative reinforcement", "without input from me", "asks for more", "Everest", "Timber"):
+            self.assertIn(claim, text(html))
+        self.assertNotRegex(text(html), r"(?i)light aversive|mostly done|\bGAP Q")
+        self.assertRegex(html, r'(?s)<h2 [^>]*k9-biglink[^>]*><a href="https://k9-communication\.com/training-records/denali/"'
+                               r'[^<]*</a>\s*</h2>\s*<h2 id="?adventure-companion')
+
     def test_e_collar_is_the_invisible_leash_and_negative_reinforcement_only(self):
         html = read("posts/e-collar/index.html")
         self.assertNotRegex(text(html), r"(?i)punish|superstitio|changed my mind")
