@@ -378,6 +378,16 @@ class SeedPosts(unittest.TestCase):
         self.assertIn('class="k9-level"', html)
         self.assertIn("Ki8EG31XYqU", self.posts["e-collar"]["card"])
 
+    def test_prong_collar_is_a_training_collar_for_negative_reinforcement(self):
+        html = read("posts/prong-collar/index.html")
+        self.assertIn("Prong Collar, aka Training Collar", text(html))
+        for claim in ("negative reinforcement", "safety and/or clarity", "still spin", "dead ring", "your leg"):
+            self.assertIn(claim, text(html))
+        self.assertNotRegex(text(html), r"(?i)sometimes necessary|surface area|wolf")
+        self.assertIn('href="/posts/flat-collar/"', html)
+        self.assertIn('href="/posts/escape-and-avoidance/#have-a-plan"', html)
+        self.assertIn("c-bvRYEpFLs", html)
+
 
 class Links(unittest.TestCase):
     def test_internal_links_and_anchors_resolve(self):
