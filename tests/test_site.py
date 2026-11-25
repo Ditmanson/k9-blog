@@ -398,6 +398,14 @@ class SeedPosts(unittest.TestCase):
         self.assertIn('href="/posts/escape-and-avoidance/"', html)
         self.assertIn('href="/posts/food-and-play/"', html)
 
+    def test_flat_collar_means_a_job(self):
+        html = read("posts/flat-collar/index.html")
+        for claim in ("Flat Collars: Not Exactly Useless", "air scent", "fur saver", "tracking, not trailing",
+                      "front of the throat", "martingale", "Denali"):
+            self.assertIn(claim, text(html))
+        self.assertNotRegex(text(html), r"(?i)least useful|not very useful")
+        self.assertIn('href="/posts/prong-collar/"', html)
+
     def test_agitation_collar_is_for_frustration_not_walking(self):
         html = read("posts/agitation-collar/index.html")
         for claim in ("pulled on, hard", "frustration", "look cool", "normal collars", "getting choked"):
