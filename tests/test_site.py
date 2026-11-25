@@ -398,6 +398,14 @@ class SeedPosts(unittest.TestCase):
         self.assertIn('href="/posts/escape-and-avoidance/"', html)
         self.assertIn('href="/posts/food-and-play/"', html)
 
+    def test_slip_collar_is_convenient_but_a_prong_is_better(self):
+        html = read("posts/slip-collar/index.html")
+        for claim in ("my wife made", "chokers", "vet", "more pressure", "throat", "safety and/or clarity", "by the ears"):
+            self.assertIn(claim, text(html))
+        self.assertNotIn("snappy", text(html))
+        for href in ("/posts/prong-collar/", "/posts/flat-collar/", "/posts/escape-and-avoidance/#have-a-plan"):
+            self.assertIn(f'href="{href}"', html)
+
     def test_prong_collar_is_a_training_collar_for_negative_reinforcement(self):
         html = read("posts/prong-collar/index.html")
         self.assertIn("Prong Collar, aka Training Collar", text(html))
