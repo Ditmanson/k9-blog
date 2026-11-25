@@ -6,13 +6,13 @@ tags: [odie, reactivity, muzzle, leash pressure]
 description: "A history of dog fights, and how we worked through it."
 ---
 
-Odie came to me with a history of dog fights and dog-on-dog reactivity. That was why we started working together in the first place.
+Odie is my dad's dog. He's a rescue, and he came with a history of dog fights and dog-on-dog reactivity. That was why we started working together in the first place.
 
 ## Manage first, then teach
 
-We started with muzzle training so everyone was safe around other dogs. Then we exposed him to other dogs, beginning with my dog, also muzzled.
+We started with muzzle training so everyone was safe around other dogs. Then we exposed him to other dogs, beginning with my dogs, Griz and Denali, also muzzled.
 
-We spent a lot of time on markers and on redirecting with leash pressure. Instead of telling Odie "no" and hammering him once he was reactive, I applied pressure early, which kept the pressure low. Leash pressure plus obedience showed him how to manage the situation himself.
+We spent a lot of time on [markers](/posts/food-and-play/) and on redirecting with [leash pressure](/posts/escape-and-avoidance/). Instead of telling Odie "no" and hammering him once he was reactive, I applied pressure early, which kept the pressure low. Leash pressure plus obedience showed him how to manage the situation himself.
 
 {{< youtube bWfeBAtPs6U >}}
 
@@ -21,5 +21,9 @@ We spent a lot of time on markers and on redirecting with leash pressure. Instea
 We layered positive reinforcement with negative reinforcement using a sendaway. It was fun for him, and it let us work impulse control with place commands. The termination marker rewarded the good behavior. It habituated Odie to stress and made him a lot more fun to train with.
 
 {{< youtube 43qKTFfH2So >}}
+
+## Where he is now
+
+Today he's home, living happy.
 
 Got a reactive dog? [Here's his full record](https://k9-communication.com/training-records/odie-ditmanson/), and here's how to [work with me](https://k9-communication.com/book/).

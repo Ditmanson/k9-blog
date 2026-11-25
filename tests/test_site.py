@@ -391,6 +391,13 @@ class SeedPosts(unittest.TestCase):
         for row in ("Before teething 3", "After teething 2", "Mostly full grown 1"):
             self.assertIn(row, meals)
 
+    def test_odie_is_my_dads_rescue_and_home_happy(self):
+        html = read("posts/odie/index.html")
+        for claim in ("my dad’s dog", "rescue", "Griz and Denali", "living happy"):
+            self.assertIn(claim, text(html))
+        self.assertIn('href="/posts/escape-and-avoidance/"', html)
+        self.assertIn('href="/posts/food-and-play/"', html)
+
     def test_prong_collar_is_a_training_collar_for_negative_reinforcement(self):
         html = read("posts/prong-collar/index.html")
         self.assertIn("Prong Collar, aka Training Collar", text(html))
