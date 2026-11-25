@@ -398,6 +398,14 @@ class SeedPosts(unittest.TestCase):
         self.assertIn('href="/posts/escape-and-avoidance/"', html)
         self.assertIn('href="/posts/food-and-play/"', html)
 
+    def test_agitation_collar_is_for_frustration_not_walking(self):
+        html = read("posts/agitation-collar/index.html")
+        for claim in ("pulled on, hard", "frustration", "look cool", "normal collars", "getting choked"):
+            self.assertIn(claim, text(html))
+        self.assertNotIn("close to zero", text(html))
+        self.assertIn('href="/posts/prong-collar/"', html)
+        self.assertEqual(re.search(r"(?s)<ol>(.*?)</ol>", html).group(1).count("<li>"), 4)
+
     def test_slip_collar_is_convenient_but_a_prong_is_better(self):
         html = read("posts/slip-collar/index.html")
         for claim in ("my wife made", "chokers", "vet", "more pressure", "throat", "safety and/or clarity", "by the ears"):
