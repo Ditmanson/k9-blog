@@ -56,8 +56,9 @@ How often I feed depends on the dog's age.
 
 | Dog | Meals | Why I do it |
 | -- | -- | -- |
-| Growing | Several a day | They absorb calories better when it's spread out |
-| Full grown | One, about every 24 hours | Food drive, and a settled stomach |
+| Before teething | 3 a day | They absorb calories better when it's spread out |
+| After teething | 2 a day | They absorb calories better when it's spread out |
+| Mostly full grown | 1, about every 24 hours | Food drive, and a settled stomach |
 
 Predators are good at fasting, better than us. My thinking is that time between meals gives the gut biome a chance to reset and the bacteria time to even out. It's why vets have you fast a dog with an upset stomach for 24 hours, then go to chicken and rice. My dogs get that fast between every meal, and they show up hungry for training.
 

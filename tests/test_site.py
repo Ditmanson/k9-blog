@@ -378,6 +378,19 @@ class SeedPosts(unittest.TestCase):
         self.assertIn('class="k9-level"', html)
         self.assertIn("Ki8EG31XYqU", self.posts["e-collar"]["card"])
 
+    def test_what_my_dogs_eat_is_dinner_once_a_day(self):
+        html = read("posts/what-my-dogs-eat/index.html")
+        for claim in ("once a day", "work best", "the vet", "50/50", "training treats", "scent boxes"):
+            self.assertIn(claim, text(html))
+        self.assertNotRegex(text(html), r"(?i)in the morning|garbage|\d+ ?(lbs|pounds)")
+        self.assertIn('href="/posts/dogs-need-enrichment/#4-dog-jobs"', html)
+        self.assertIn("gZd-anFsCvc", html)
+
+    def test_enrichment_meals_follow_teething(self):
+        meals = text(read("posts/dogs-need-enrichment/index.html"))
+        for row in ("Before teething 3", "After teething 2", "Mostly full grown 1"):
+            self.assertIn(row, meals)
+
     def test_prong_collar_is_a_training_collar_for_negative_reinforcement(self):
         html = read("posts/prong-collar/index.html")
         self.assertIn("Prong Collar, aka Training Collar", text(html))
